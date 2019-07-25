@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <article class="js-article"></article>
+    <input type="button" value="fetch" class="js-fetchBtn" />
+    <script>
+      const fetchBtn = document.querySelector('.js-fetchBtn');
+      const article = document.querySelector('.js-article');
+
+      const fetchBtnHandler = function() {
+        fetch('css').then(function(response) {
+          response.text().then(function(text) {
+            if (response.status === 404) {
+              alert('Not Found');
+            } else if (response.status === 200) {
+              article.innerHTML = text;
+            }
+          });
+        });
+      };
+
+      fetchBtn.addEventListener('click', fetchBtnHandler);
+    </script>
+  </body>
+</html>

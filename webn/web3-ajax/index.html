@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WEB1 - Welcome</title>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="colors.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1><a href="#!welcome" class="pageLink js-pageLink">WEB</a></h1>
+    <input
+      id="night_day"
+      type="button"
+      value="night"
+      onclick="
+    nightDayHandler(this);
+  "
+    />
+    <ol id="nav"></ol>
+    <article></article>
+    <script>
+      const fetchPageHandler = function(name, targetHTML) {
+        fetch(name).then(function(response) {
+          response.text().then(function(text) {
+            targetHTML.innerHTML = text;
+            const pageLink = document.querySelectorAll(`.js-pageLink`);
+
+            Array.from(pageLink).forEach(function(element) {
+              element.addEventListener('click', pageClickHandler);
+            });
+          });
+        });
+      };
+      const nav = document.getElementById(`nav`);
+      fetchPageHandler(`list`, nav);
+
+      const article = document.querySelector(`article`);
+
+      const pageClickHandler = function(event) {
+        const pageName = event.target.hash.substr(2);
+        fetchPageHandler(pageName, article);
+      };
+
+      if (!location.hash) {
+        fetchPageHandler(`welcome`, article);
+      }
+    </script>
+  </body>
+</html>
