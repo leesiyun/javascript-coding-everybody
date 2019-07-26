@@ -5,10 +5,13 @@
     <meta charset="utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="colors.js"></script>
+    <!--
+<script src="node_modules/whatwg-fetch/fetch.js"></script>
+    -->
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1><a href="#!welcome" class="pageLink js-pageLink">WEB</a></h1>
+    <h1 class="pageLink js-pageLink">WEB</h1>
     <input
       id="night_day"
       type="button"
@@ -20,30 +23,49 @@
     <ol id="nav"></ol>
     <article></article>
     <script>
-      const fetchPageHandler = function(name, targetHTML) {
-        fetch(name).then(function(response) {
-          response.text().then(function(text) {
-            targetHTML.innerHTML = text;
-            const pageLink = document.querySelectorAll(`.js-pageLink`);
+      const nav = document.getElementById(`nav`);
 
-            Array.from(pageLink).forEach(function(element) {
-              element.addEventListener('click', pageClickHandler);
-            });
+      fetch(`list`).then(function(response) {
+        response.text().then(function(text) {
+          let items = text.split(`,`);
+          let i = 0;
+          let tags = ``;
+          while (i < items.length) {
+            let item = items[i];
+            item = item.trim();
+            let tag = `<li class="pageLink js-pageLink">` + item + `</li>`;
+            tags += tag;
+            i++;
+
+            nav.innerHTML = tags;
+          }
+
+          const pageLink = document.querySelectorAll(`.js-pageLink`);
+
+          Array.from(pageLink).forEach(function(element) {
+            element.addEventListener('click', pageClickHandler);
           });
         });
-      };
-      const nav = document.getElementById(`nav`);
-      fetchPageHandler(`list`, nav);
+      });
 
       const article = document.querySelector(`article`);
 
       const pageClickHandler = function(event) {
-        const pageName = event.target.hash.substr(2);
+        const pageName = event.target.textContent.toLowerCase();
+        location.href = `#!` + pageName;
         fetchPageHandler(pageName, article);
       };
 
+      const fetchPageHandler = function(name, targetHTML) {
+        fetch(name).then(function(response) {
+          response.text().then(function(text) {
+            targetHTML.innerHTML = text;
+          });
+        });
+      };
+
       if (!location.hash) {
-        fetchPageHandler(`welcome`, article);
+        fetchPageHandler(`web`, article);
       }
     </script>
   </body>

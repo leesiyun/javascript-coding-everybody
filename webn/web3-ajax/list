@@ -1,5 +1,1 @@
-<li><a href="#!html" class="pageLink js-pageLink">HTML</a></li>
-      <li><a href="#!css" class="pageLink js-pageLink">CSS</a></li>
-      <li>
-        <a href="#!javascript" class="pageLink js-pageLink">JavaScript</a>
-      </li>
+HTML,CSS,JavaScript,Ajax
