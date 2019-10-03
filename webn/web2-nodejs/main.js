@@ -3,26 +3,27 @@ const fs = require('fs');
 const url = require('url');
 const qs = require('querystring');
 
-let templateHTML = (title, list, body, control) => {
-  return `
-    <!doctype html>
-    <html>
-    <head>
-      <title>WEB1 - ${title}</title>
-      <meta charset="utf-8">
-    </head>
-    <body>
-      <h1><a href="/">WEB</a></h1>
-      ${list}
-      ${control}
-      ${body}
-    </body>
-    </html>
-    `;
+const template = {
+  html: (title, list, body, control) => {
+    return `
+      <!doctype html>
+      <html>
+      <head>
+        <title>WEB1 - ${title}</title>
+        <meta charset="utf-8">
+      </head>
+      <body>
+        <h1><a href="/">WEB</a></h1>
+        ${list}
+        ${control}
+        ${body}
+      </body>
+      </html>
+      `;
+  },
+  list: fileList =>
+    fileList.map(file => `<li><a href="/?id=${file}">${file}</a></li>`)
 };
-
-const templateList = fileList =>
-  fileList.map(file => `<li><a href="/?id=${file}">${file}</a></li>`);
 
 const app = http.createServer(function(request, response) {
   const _url = request.url;
@@ -34,22 +35,22 @@ const app = http.createServer(function(request, response) {
       fs.readdir('./data', function(error, fileList) {
         const title = 'Welcome';
         const description = 'Hello, Node.js';
-        const list = `<ol>${templateList(fileList).join('')}</ol>`;
-        const template = templateHTML(
+        const list = `<ol>${template.list(fileList).join('')}</ol>`;
+        const html = template.html(
           title,
           list,
           `<h2>${title}</h2>${description}`,
           `<a href="/create">create</a>`
         );
         response.writeHead(200);
-        response.end(template);
+        response.end(html);
       });
     } else {
       fs.readdir('./data', function(error, fileList) {
         fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description) {
           const title = queryData.id;
-          const list = `<ol>${templateList(fileList).join('')}</ol>`;
-          const template = templateHTML(
+          const list = `<ol>${template.list(fileList).join('')}</ol>`;
+          const html = template.html(
             title,
             list,
             `<h2>${title}</h2>${description}`,
@@ -61,15 +62,15 @@ const app = http.createServer(function(request, response) {
             </form>`
           );
           response.writeHead(200);
-          response.end(template);
+          response.end(html);
         });
       });
     }
   } else if (pathname === '/create') {
     fs.readdir('./data', function(error, fileList) {
       const title = 'WEB - create';
-      const list = `<ol>${templateList(fileList).join('')}</ol>`;
-      const template = templateHTML(
+      const list = `<ol>${template.list(fileList).join('')}</ol>`;
+      const html = template.html(
         title,
         list,
         `
@@ -86,7 +87,7 @@ const app = http.createServer(function(request, response) {
         ''
       );
       response.writeHead(200);
-      response.end(template);
+      response.end(html);
     });
   } else if (pathname === '/create_process') {
     let body = '';
@@ -106,8 +107,8 @@ const app = http.createServer(function(request, response) {
     fs.readdir('./data', function(error, fileList) {
       fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description) {
         const title = queryData.id;
-        const list = `<ol>${templateList(fileList).join('')}</ol>`;
-        const template = templateHTML(
+        const list = `<ol>${template.list(fileList).join('')}</ol>`;
+        const html = template.html(
           title,
           list,
           `
@@ -126,7 +127,7 @@ const app = http.createServer(function(request, response) {
           <a href="/update?id=${title}">update</a>`
         );
         response.writeHead(200);
-        response.end(template);
+        response.end(html);
       });
     });
   } else if (pathname === '/update_process') {
